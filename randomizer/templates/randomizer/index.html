@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cohort Randomizer</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Add Names</h2>
+        <input type="text" id="nameInput" placeholder="Enter name">
+        <button onclick="addName()">Add Name</button>
+        <div class="name-list" id="nameList"></div>
+        <div class="dark-mode-toggle"> 
+            <span>Dark Mode</span>
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch" onclick="toggleDarkMode()">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+    <div class="container">
+        <h1>Cohort Randomizer</h1>
+        <div class="switch-container">
+            <span class="switch-label" id="mode1Label" onclick="setRandomizeMode('mode1')">Mode: Pair</span>
+            <span class="switch-label" id="mode2Label" onclick="setRandomizeMode('mode2')">Mode: Groups</span>
+        </div>
+        <div id="groupSizeContainer" style="display: none;">
+            <input type="number" id="groupSizeInput" placeholder="Enter group size">
+        </div>
+        <button class="randomizer-button" onclick="randomizeCohort()">Randomize</button>
+        <div class="result" id="result"></div>
+    </div>
+    <div class="sidebar-right" id="sidebarRight">
+        <button class="toggle-button" onclick="toggleSidebar()">&#9664;</button>
+        <h2>Description</h2>
+        <p>This application helps to randomize cohorts by adding names and then randomizing them into groups. You can add names on the left side-bar and then select them by clicking.</p>
+        <h2>Updates</h2>
+        <div id="updates">
+            <!-- Updates will be posted here -->
+            <p>[2025-02-26 16:49] - Added caching to save the list of names between sessions.</p>
+            <p>[2025-02-26 17:07] - Added a sidebar on the right side</p>
+            <p>[2025-02-26 17:12] - Added a description and updates section</p>
+            <p>[2025-02-26 18:13] - Made the right sidebar collapsable</p>
+            <p>[2025-02-27 08:26] - Added a dark mode toggle</p>
+            <p>[2025-02-27 08:27] - Made the updates sidebar collapsable</p>
+            <p>[2025-02-27 13:42] - Added a mode switcher to switch between pair and group modes</p>
+            <p>[2025-02-27 13:57] - Added a group size input for group mode</p>
+        </div>
+    </div>
+
+    <script src="cohortRandomizer.js"></script>
+    <script src="main.js"></script>
+    <script>
+       
+    </script>
+</body>
+</html>

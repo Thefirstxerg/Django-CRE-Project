@@ -32,12 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     # My apps 
-    'accounts',
-    'chat',
-    'suggestions',
-
-    # Third-party apps
-
+    
 
     # Defaulted Apps
     'django.contrib.admin',
@@ -123,8 +118,20 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
-STATIC_URL = 'static/'
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / "media"
+
+# Channels settings
+ASGI_APPLICATION = 'cre_server.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

@@ -1,128 +1,150 @@
-let randomizeMode = 'mode1';
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOM fully loaded and parsed');
+    
+    // Add event listeners for the buttons
+    const addButton = document.getElementById('addNameBtn');
+    const deleteButton = document.getElementById('deleteSelectedBtn');
+    const clearButton = document.getElementById('clearAllBtn');
 
-function setRandomizeMode(mode) {
-    randomizeMode = mode;
-    document.getElementById('mode1Label').classList.toggle('active', mode === 'mode1');
-    document.getElementById('mode2Label').classList.toggle('active', mode === 'mode2');
-    document.getElementById('groupSizeContainer').style.display = mode === 'mode2' ? 'block' : 'none';
-}
-
-function randomizeCohort() {
-    let selectedItems = document.querySelectorAll('.name-item.selected');
-    let cohort = Array.from(selectedItems).map(item => item.textContent);
-
-    if (cohort.length === 0) {
-        alert('Please select at least one name.');
-        return;
+    // Check if elements exist before attaching event listeners
+    if (addButton) {
+        addButton.addEventListener('click', function () {
+            console.log('Add button clicked');
+            addName();
+        });
+    } else {
+        console.error('Add button not found');
     }
 
-    if (randomizeMode === 'mode1') {
-        randomizePairs(cohort);
-    } else if (randomizeMode === 'mode2') {
-        const groupSize = parseInt(document.getElementById('groupSizeInput').value);
-        if (isNaN(groupSize) || groupSize <= 0) {
-            alert('Please enter a valid group size.');
-            return;
-        }
-        randomizeGroups(cohort, groupSize);
-    }
-}
-
-function randomizePairs(cohort) {
-    // Shuffle the cohort array
-    for (let i = cohort.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [cohort[i], cohort[j]] = [cohort[j], cohort[i]];
+    if (deleteButton) {
+        deleteButton.addEventListener('click', function () {
+            console.log('Delete Selected button clicked');
+            deleteSelectedNames();
+        });
+    } else {
+        console.error('Delete button not found');
     }
 
-    // Pair students together
-    let pairs = [];
-    while (cohort.length > 1) {
-        let pair = [cohort.pop(), cohort.pop()];
-        pairs.push(pair);
+    if (clearButton) {
+        clearButton.addEventListener('click', function () {
+            console.log('Clear All button clicked');
+            clearNames();
+        });
+    } else {
+        console.error('Clear button not found');
     }
 
-    // If there's an odd number of students, the last one is left alone
-    let leftAlone = cohort.length === 1 ? cohort[0] : null;
+    loadNames();
+});
 
-    // Clear the result container
-    let resultContainer = document.getElementById('result');
-    resultContainer.innerHTML = '';
 
-    // Display the pairs and the student left alone
-    pairs.forEach(pair => {
-        let pairElement = document.createElement('p');
-        pairElement.textContent = `Pair: ${pair[0]} with ${pair[1]}`;
-        resultContainer.appendChild(pairElement);
-    });
-
-    if (leftAlone) {
-        let soloElement = document.createElement('p');
-        soloElement.textContent = `Solo: ${leftAlone}`;
-        resultContainer.appendChild(soloElement);
-    }
-}
-
-function randomizeGroups(cohort, groupSize) {
-    const shuffledNames = cohort.sort(() => Math.random() - 0.5);
-    const groups = [];
-
-    while (shuffledNames.length) {
-        groups.push(shuffledNames.splice(0, groupSize));
-    }
-
-    // Distribute remaining names
-    for (let i = 0; i < shuffledNames.length; i++) {
-        groups[i % groups.length].push(shuffledNames[i]);
-    }
-
-    displayGroups(groups);
-}
-
-function displayGroups(groups) {
-    const resultDiv = document.getElementById('result');
-    resultDiv.innerHTML = '';
-    groups.forEach((group, index) => {
-        const groupDiv = document.createElement('div');
-        groupDiv.innerHTML = `<h3>Group ${index + 1}</h3><p>${group.join(', ')}</p>`;
-        resultDiv.appendChild(groupDiv);
-    });
-}
-
-function addName(name = null) {
-    let nameInput = name || document.getElementById('nameInput').value.trim();
+function addName() {
+    console.log('Adding name...');
+    let nameInput = document.getElementById('nameInput').value.trim();
     if (nameInput === '') {
         alert('Please enter a name.');
         return;
     }
 
-    let nameList = document.getElementById('nameList');
-    let nameItem = document.createElement('div');
-    nameItem.className = 'name-item';
-    nameItem.textContent = nameInput;
-    nameItem.onclick = () => nameItem.classList.toggle('selected');
-    nameList.appendChild(nameItem);
+    fetch('/add/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': getCSRFToken()
+        },
+        body: new URLSearchParams({ 'name': nameInput })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateNameList(data.names);
+        } else {
+            alert('Error adding name.');
+        }
+    });
 
-    if (!name) {
-        document.getElementById('nameInput').value = '';
-        saveNameToLocalStorage(nameInput);
+    document.getElementById('nameInput').value = '';  // Clear input field
+}
+
+function deleteSelectedNames() {
+    const selectedItems = document.querySelectorAll('.name-item.selected');
+    const selectedIds = Array.from(selectedItems).map(item => item.dataset.id);
+
+    if (selectedIds.length === 0) {
+        alert('Please select at least one name to delete.');
+        return;
     }
+
+    fetch('/delete_selected/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': getCSRFToken()
+        },
+        body: `ids=${selectedIds.join(',')}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateNameList(data.names);  // Update the list after successful delete
+        } else {
+            alert('Error deleting names');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error deleting names');
+    });
 }
 
-function saveNameToLocalStorage(name) {
-    let names = JSON.parse(localStorage.getItem('names')) || [];
-    names.push(name);
-    localStorage.setItem('names', JSON.stringify(names));
+function clearNames() {
+    if (!confirm('Are you sure you want to clear all names?')) {
+        return;
+    }
+
+    fetch('/clear/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': getCSRFToken()
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateNameList([]);  // Clear the name list after successful clear
+        } else {
+            alert('Error clearing names');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error clearing names');
+    });
 }
 
-function loadNamesFromLocalStorage() {
-    let names = JSON.parse(localStorage.getItem('names')) || [];
-    names.forEach(name => addName(name));
+function updateNameList(names) {
+    let nameList = document.getElementById('nameList');
+    nameList.innerHTML = '';  // Clear existing names
+    names.forEach(nameObj => {
+        let nameItem = document.createElement('div');
+        nameItem.className = 'name-item';
+        nameItem.textContent = nameObj.name;
+        nameItem.dataset.id = nameObj.id; // Assign database ID
+        nameItem.onclick = () => nameItem.classList.toggle('selected');  // Toggle selected
+
+        nameList.appendChild(nameItem);
+    });
 }
 
-window.onload = () => {
-    const defaultNames = ['Aidan', 'Cadee', 'Courtney', 'Ethan', 'Lesedi', 'Lindo', 'Marvelous', 'Mieke', 'Phomello', 'Pierre', 'Ronny', 'Sibu', 'Tom', 'Ulrich'];
-    defaultNames.sort().forEach(name => addName(name));
-    loadNamesFromLocalStorage();
-    setRandomizeMode(randomizeMode);
-};
+function getCSRFToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+
+function loadNames() {
+    fetch('/names/')
+    .then(response => response.json())
+    .then(data => {
+        updateNameList(data.names);
+    });
+}

@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import NameEntry
 
-# Register your models here.
+
+admin.site.register(NameEntry)

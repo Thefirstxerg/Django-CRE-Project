@@ -1,71 +1,89 @@
-document.addEventListener('DOMContentLoaded', function () {
+// Wait for the DOM to be fully loaded before executing any code
+document.addEventListener('DOMContentLoaded', initializeApp);
+
+// Object to store DOM elements
+const elements = {
+    addBtn: null,
+    deleteBtn: null,
+    clearBtn: null,
+    nameInput: null,
+    nameList: null,
+    darkModeSwitch: null // Add dark mode switch element
+};
+
+// Initialize the application
+function initializeApp() {
     console.log('DOM fully loaded and parsed');
     
-    // Add event listeners for the buttons
-    const addButton = document.getElementById('addNameBtn');
-    const deleteButton = document.getElementById('deleteSelectedBtn');
-    const clearButton = document.getElementById('clearAllBtn');
+    // Initialize element references
+    elements.addBtn = document.getElementById('addNameBtn');
+    elements.deleteBtn = document.getElementById('deleteSelectedBtn');
+    elements.clearBtn = document.getElementById('clearAllBtn');
+    elements.nameInput = document.getElementById('nameInput');
+    elements.nameList = document.getElementById('nameList');
+    elements.darkModeSwitch = document.getElementById('darkModeSwitch'); // Add dark mode switch element
 
-    // Check if elements exist before attaching event listeners
-    if (addButton) {
-        addButton.addEventListener('click', function () {
-            console.log('Add button clicked');
+    // Set up event listeners
+    setupEventListeners();
+    
+    // Load initial names from server
+    loadNames();
+}
+
+// Set up all event listeners
+function setupEventListeners() {
+    // Add name button
+    if (elements.addBtn) {
+        elements.addBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             addName();
         });
-    } else {
-        console.error('Add button not found');
     }
 
-    if (deleteButton) {
-        deleteButton.addEventListener('click', function () {
-            console.log('Delete Selected button clicked');
+    // Delete selected button
+    if (elements.deleteBtn) {
+        elements.deleteBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             deleteSelectedNames();
         });
-    } else {
-        console.error('Delete button not found');
     }
 
-    if (clearButton) {
-        clearButton.addEventListener('click', function () {
-            console.log('Clear All button clicked');
+    // Clear all button
+    if (elements.clearBtn) {
+        elements.clearBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             clearNames();
         });
-    } else {
-        console.error('Clear button not found');
     }
 
-    loadNames();
-});
+    // Dark mode switch
+    if (elements.darkModeSwitch) {
+        elements.darkModeSwitch.addEventListener('change', toggleDarkMode);
+    }
+}
 
-
+// Add a new name to the list
 function addName() {
-    console.log('Adding name...');
-    let nameInput = document.getElementById('nameInput').value.trim();
+    const nameInput = elements.nameInput.value.trim();
+    
     if (nameInput === '') {
         alert('Please enter a name.');
         return;
     }
 
-    fetch('/add/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': getCSRFToken()
-        },
-        body: new URLSearchParams({ 'name': nameInput })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            updateNameList(data.names);
-        } else {
-            alert('Error adding name.');
-        }
-    });
-
-    document.getElementById('nameInput').value = '';  // Clear input field
+    // Send POST request to server
+    sendRequest('/add/', { name: nameInput })
+        .then(data => {
+            if (data.success) {
+                updateNameList(data.names);
+                elements.nameInput.value = ''; // Clear input field
+            } else {
+                alert('Error adding name.');
+            }
+        });
 }
 
+// Delete selected names from the list
 function deleteSelectedNames() {
     const selectedItems = document.querySelectorAll('.name-item.selected');
     const selectedIds = Array.from(selectedItems).map(item => item.dataset.id);
@@ -75,76 +93,82 @@ function deleteSelectedNames() {
         return;
     }
 
-    fetch('/delete_selected/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': getCSRFToken()
-        },
-        body: `ids=${selectedIds.join(',')}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            updateNameList(data.names);  // Update the list after successful delete
-        } else {
-            alert('Error deleting names');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error deleting names');
-    });
+    sendRequest('/delete_selected/', { ids: selectedIds.join(',') })
+        .then(data => {
+            if (data.success) {
+                updateNameList(data.names);
+            } else {
+                alert('Error deleting names');
+            }
+        });
 }
 
+// Clear all names from the list
 function clearNames() {
     if (!confirm('Are you sure you want to clear all names?')) {
         return;
     }
 
-    fetch('/clear/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': getCSRFToken()
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            updateNameList([]);  // Clear the name list after successful clear
-        } else {
-            alert('Error clearing names');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error clearing names');
-    });
+    sendRequest('/clear/')
+        .then(data => {
+            if (data.success) {
+                updateNameList([]);
+            } else {
+                alert('Error clearing names');
+            }
+        });
 }
 
+// Update the UI with the current list of names
 function updateNameList(names) {
-    let nameList = document.getElementById('nameList');
-    nameList.innerHTML = '';  // Clear existing names
+    elements.nameList.innerHTML = '';
     names.forEach(nameObj => {
-        let nameItem = document.createElement('div');
+        const nameItem = document.createElement('div');
         nameItem.className = 'name-item';
         nameItem.textContent = nameObj.name;
-        nameItem.dataset.id = nameObj.id; // Assign database ID
-        nameItem.onclick = () => nameItem.classList.toggle('selected');  // Toggle selected
-
-        nameList.appendChild(nameItem);
+        nameItem.dataset.id = nameObj.id;
+        nameItem.onclick = () => nameItem.classList.toggle('selected');
+        elements.nameList.appendChild(nameItem);
     });
 }
 
+// Helper function to send requests to the server
+async function sendRequest(url, data = null) {
+    try {
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCSRFToken()
+            }
+        };
+
+        if (data) {
+            options.body = new URLSearchParams(data);
+        }
+
+        const response = await fetch(url, options);
+        return await response.json();
+    } catch (error) {
+        console.error('Request error:', error);
+        throw error;
+    }
+}
+
+// Get CSRF token from the page
 function getCSRFToken() {
     return document.querySelector('[name=csrfmiddlewaretoken]').value;
 }
 
+// Load names from server
 function loadNames() {
     fetch('/names/')
-    .then(response => response.json())
-    .then(data => {
-        updateNameList(data.names);
-    });
+        .then(response => response.json())
+        .then(data => updateNameList(data.names))
+        .catch(error => console.error('Error loading names:', error));
+}
+
+// Toggle dark mode
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
 }

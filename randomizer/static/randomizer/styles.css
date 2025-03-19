@@ -160,20 +160,16 @@ p {
     display: inline-block;
     width: 50px;
     height: 25px;
-  }
-  
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
-  .switch-container {
+    vertical-align: middle; /* Ensure vertical alignment */
+}
+
+.switch-container {
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 20px 0;
 }
+
 .switch-label {
     padding: 10px 20px;
     cursor: pointer;
@@ -182,7 +178,9 @@ p {
     border-radius: 5px;
     margin: 0 5px;
     transition: background-color 0.3s;
+    vertical-align: middle; /* Ensure vertical alignment */
 }
+
 .switch-label.active {
     background-color: #007bff;
     color: white;
@@ -232,6 +230,9 @@ p {
 
 /*Dark Mode Config*/
 .dark-mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     position: absolute;
     bottom: 10px;
     left: 10px;

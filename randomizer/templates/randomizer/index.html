@@ -1,4 +1,5 @@
 {% load static %}
+{% csrf_token %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,35 +9,28 @@
     <title>Cohort Randomizer</title>
     <link rel="stylesheet" href="{% static 'randomizer/styles.css' %}">
     <style>
-
     </style>
 </head>
 <body>
     <div class="sidebar">
         <h2>Add Names</h2>
-        <!-- Django Form -->
-        <form id="addNameForm" method="post">
-            {% csrf_token %}
-            <input type="text" id="nameInput" placeholder="Enter a name">
-            <button type="button" id="addNameBtn">Add</button>
-            <button type="button" id="deleteSelectedBtn">Delete Selected</button>
-        </form>
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <input type="text" id="nameInput" placeholder="Enter a name">
+        <button id="addNameBtn" type="button">Add Name</button>
+        <button id="deleteSelectedBtn" type="button">Delete Selected</button>
+        
         <div class="name-list" id="nameList"></div>
         <div class="dark-mode-toggle"> 
             <span>Dark Mode</span>
             <label class="switch">
-                <input type="checkbox" id="darkModeSwitch">
-                <span class="slider"></span>
+                <input type="checkbox" id="darkModeSwitch" onclick="toggleDarkMode()">
+                <span class="slider"></span> 
             </label>
+            
         </div>
         
-        <br>
-        <br>
-        <!-- Clear Button -->
-        <form id="clearForm" method="post">
-            {% csrf_token %}
-            <button type="button" id="clearAllBtn">Clear All</button>
-        </form>
+        <br><br>
+        <button id="clearAllBtn" type="button">Clear All</button>
     </div>
 
     <div class="container">
@@ -51,6 +45,7 @@
         <button class="randomizer-button" onclick="randomizeCohort()">Randomize</button>
         <div class="result" id="result"></div>
     </div>
+
     <div class="sidebar-right" id="sidebarRight">
         <button class="toggle-button" onclick="toggleSidebar()">&#9664;</button>
         <h2>Description</h2>
@@ -67,7 +62,7 @@
             <p>[2025-02-27 13:42] - Added a mode switcher to switch between pair and group modes</p>
             <p>[2025-02-27 13:57] - Added a group size input for group mode</p>
             <p>[2025-03-19 10:02] - Added a Django framework</p>
-            <p>[2025-03-19 10:03] - Removed the names being stored localy, now its stored in a django database</p>
+            <p>[2025-03-19 10:03] - Removed the names being stored locally, now it's stored in a Django database</p>
         </div>
     </div>
 

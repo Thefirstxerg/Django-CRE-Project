@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # My apps 
     'randomizer',
+    'account',
 
     # Defaulted Apps
     'django.contrib.admin',
@@ -138,3 +139,6 @@ CHANNEL_LAYERS = {
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = 'account:login'
+LOGIN_REDIRECT_URL = 'randomizer:index'

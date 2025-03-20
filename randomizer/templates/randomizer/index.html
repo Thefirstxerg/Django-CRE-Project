@@ -9,10 +9,30 @@
     <title>Cohort Randomizer</title>
     <link rel="stylesheet" href="{% static 'randomizer/styles.css' %}">
     <style>
+        .user-info {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .user-info p {
+            margin: 0;
+            color: white;
+        }
+        .logout-link {
+            color: #fff;
+            text-decoration: none;
+            float: right;
+        }
+        .logout-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
+        <div class="user-info">
+            <p>Welcome, {{ username }}! <a href="{% url 'account:logout' %}" class="logout-link">Logout</a></p>
+        </div>
         <h2>Add Names</h2>
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
         <input type="text" id="nameInput" placeholder="Enter a name">
@@ -24,7 +44,7 @@
             <span>Dark Mode</span>
             <label class="switch">
                 <input type="checkbox" id="darkModeSwitch" onclick="toggleDarkMode()">
-                <span class="slider"></span> 
+                <span class="slider"></span>
             </label>
             
         </div>

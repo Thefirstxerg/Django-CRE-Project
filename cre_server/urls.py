@@ -16,8 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
+
+def redirect_to_login(request):
+    if request.user.is_authenticated:
+        return redirect('randomizer:index')
+    return redirect('account:login')
 
 urlpatterns = [
+    path('', redirect_to_login, name='root'),
     path('admin/', admin.site.urls),
-    path('', include('randomizer.urls')),
+    path('account/', include('account.urls')),
+    path('randomizer/', include('randomizer.urls')),  # Change back to having a prefix
 ]

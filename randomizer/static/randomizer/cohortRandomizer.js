@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
  */
 function setupEventListeners() {
     const buttons = [
-        { id: 'addNameBtn', handler: addName, log: 'Add button clicked' },
+        { id: 'addNameBtn', handler: addName, log: 'Add button clicked' }, 
         { id: 'deleteSelectedBtn', handler: deleteSelectedNames, log: 'Delete Selected button clicked' },
         { id: 'clearAllBtn', handler: clearNames, log: 'Clear All button clicked' }
     ];

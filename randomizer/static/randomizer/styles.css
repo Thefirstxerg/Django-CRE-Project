@@ -301,3 +301,20 @@ body.dark-mode .switch-label.active {
     color: #e0e0e0;
 }
 
+.user-info {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.user-info p {
+    margin: 0;
+    color: white;
+}
+.logout-link {
+    color: #fff;
+    text-decoration: none;
+    float: right;
+}
+.logout-link:hover {
+    text-decoration: underline;
+}

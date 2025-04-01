@@ -224,8 +224,15 @@ p {
 }
 
 .sidebar-right {
-    background-color: #ffffff;
-    color: #3f3f3f;
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 300px;
+    background-color: #f4f4f4;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    overflow-y: auto;  /* Enables vertical scrolling */
 }
 
 

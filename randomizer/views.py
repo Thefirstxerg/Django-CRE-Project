@@ -136,5 +136,5 @@ def updates_view(request):
         new_text = request.POST.get('update_text', '')
         if new_text:
             Update.objects.create(text=new_text)
-    updates = Update.objects.all()
+    updates = Update.objects.all().order_by('created_at')
     return render(request, 'randomizer/partials/_updates.html', {'updates': updates})

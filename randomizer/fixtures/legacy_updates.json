@@ -1,0 +1,90 @@
+[
+    {
+      "model": "randomizer.update",
+      "pk": 1,
+      "fields": {
+        "text": "Added caching to save the list of names between sessions.",
+        "created_at": "2025-02-26T16:49:00Z"
+      }
+    },
+    {
+      "model": "randomizer.update",
+      "pk": 2,
+      "fields": {
+        "text": "Added a sidebar on the right side.",
+        "created_at": "2025-02-26T17:07:00Z"
+      }
+    },
+    {
+      "model": "randomizer.update",
+      "pk": 3,
+      "fields": {
+        "text": "Added a description and updates section.",
+        "created_at": "2025-02-26T17:12:00Z"
+      }
+    },
+    {
+      "model": "randomizer.update",
+      "pk": 4,
+      "fields": {
+        "text": "Made the right sidebar collapsable.",
+        "created_at": "2025-02-26T18:13:00Z"
+      }
+    },
+    {
+      "model": "randomizer.update",
+      "pk": 5,
+      "fields": {
+        "text": "Added a dark mode toggle.",
+        "created_at": "2025-02-27T08:26:00Z"
+      }
+    },
+    {
+      "model": "randomizer.update",
+      "pk": 6,
+      "fields": {
+        "text": "Made the updates sidebar collapsable.",
+        "created_at": "2025-02-27T08:27:00Z"
+      }
+    },
+    {
+      "model": "randomizer.update",
+      "pk": 7,
+      "fields": {
+        "text": "Added a mode switcher to switch between pair and group modes.",
+        "created_at": "2025-02-27T13:42:00Z"
+      }
+    },
+    {
+      "model": "randomizer.update",
+      "pk": 8,
+      "fields": {
+        "text": "Added a group size input for group mode.",
+        "created_at": "2025-02-27T13:57:00Z"
+      }
+    },
+    {
+      "model": "randomizer.update",
+      "pk": 9,
+      "fields": {
+        "text": "Added a Django framework.",
+        "created_at": "2025-03-19T10:02:00Z"
+      }
+    },
+    {
+      "model": "randomizer.update",
+      "pk": 10,
+      "fields": {
+        "text": "Removed the names being stored locally, now it's stored in a Django database.",
+        "created_at": "2025-03-19T10:03:00Z"
+      }
+    },
+    {
+      "model": "randomizer.update",
+      "pk": 11,
+      "fields": {
+        "text": "Added user authentication and user accounts.",
+        "created_at": "2025-03-20T10:37:00Z"
+      }
+    }
+  ]

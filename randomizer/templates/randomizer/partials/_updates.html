@@ -1,0 +1,5 @@
+{% for update in updates %}
+    <p>[{{ update.created_at|date:"Y-m-d H:i" }}] - {{ update.text }}</p>
+{% empty %}
+    <p>No updates</p>
+{% endfor %}

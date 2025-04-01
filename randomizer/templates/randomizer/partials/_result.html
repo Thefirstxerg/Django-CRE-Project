@@ -1,0 +1,17 @@
+{% for group in result %}
+    <div class="group">
+        {% if group|length == 1 %}
+            {% if group.0 == 'No names selected' or group.0 == 'Invalid group size' or group.0 == 'Invalid mode' %}
+                {{ group.0 }}
+            {% else %}
+                Solo: {{ group.0 }}
+            {% endif %}
+        {% elif group|length == 2 %}
+            Pair: {{ group.0 }} with {{ group.1 }}
+        {% else %}
+            Group: {{ group|join:", " }}
+        {% endif %}
+    </div>
+{% empty %}
+    <p>No results</p>
+{% endfor %} 

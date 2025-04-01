@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
+from django.http import JsonResponse
+from django.urls import reverse
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -14,6 +16,11 @@ def login_view(request):
         
         if user is not None:
             login(request, user)
+            # If it's an htmx request, send an HX-Redirect header.
+            if request.headers.get('HX-Request'):
+                response = JsonResponse({'success': True})
+                response['HX-Redirect'] = reverse('randomizer:index')
+                return response
             return redirect('randomizer:index')
         else:
             messages.error(request, 'Invalid username or password.')

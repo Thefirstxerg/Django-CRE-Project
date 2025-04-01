@@ -9,4 +9,6 @@ urlpatterns = [
     path('delete_selected/', views.delete_selected_names, name='delete_selected_names'),
     path('clear/', views.clear_names, name='clear_names'),
     path('names/', views.get_names, name='get_names'),
+    path('randomize/', views.randomize_cohort, name='randomize_cohort'),
+    path('updates/', views.updates_view, name='updates'),
 ]

@@ -1,0 +1,7 @@
+{% for name in names %}
+    <div class="name-item" data-id="{{ name.id }}" onclick="toggleSelect(this)">
+        {{ name.name }}
+    </div>
+{% empty %}
+    <p style="color: #fff;">No names added yet.</p>
+{% endfor %}

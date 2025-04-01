@@ -3,6 +3,7 @@
 {% block title %}Login - Cohort Randomizer{% endblock %}
 
 {% block content %}
+<div id="login-form-container">
     <h2>Login</h2>
     {% if messages %}
         {% for message in messages %}
@@ -11,7 +12,10 @@
             </div>
         {% endfor %}
     {% endif %}
-    <form method="post">
+    <form method="post" 
+        hx-post="{% url 'account:login' %}" 
+        hx-target="#login-form-container" 
+        hx-swap="innerHTML">
         {% csrf_token %}
         <div class="form-group">
             <label for="username">Username:</label>
@@ -26,4 +30,5 @@
     <p style="text-align: center; margin-top: 1rem;">
         Don't have an account? <a href="{% url 'account:register' %}">Register here</a>
     </p>
+</div>
 {% endblock %}

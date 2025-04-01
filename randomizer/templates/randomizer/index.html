@@ -90,12 +90,13 @@
         <h2>Updates</h2>
         <!-- Wrap updates list and update form in a container -->
         <div id="updates-container">
-            <div id="updates">
+            <!-- Scrollable updates list -->
+            <div id="updates-scroll">
                 {% include 'randomizer/partials/_updates.html' %}
             </div>
             {% if request.user.is_superuser %}
-            <!-- The update form targets only the #updates list so the form remains visible -->
-            <form hx-post="{% url 'randomizer:updates' %}" hx-target="#updates" hx-swap="innerHTML">
+            <!-- Update form with form reset after request -->
+            <form hx-post="{% url 'randomizer:updates' %}" hx-target="#updates-scroll" hx-swap="outerHTML" hx-on:afterRequest="this.reset()">
                 {% csrf_token %}
                 <input type="text" name="update_text" placeholder="Enter new update" required class="update-input">
                 <button type="submit" class="update-btn">Submit Update</button>

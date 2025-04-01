@@ -203,6 +203,7 @@ function setRandomizeMode(mode) {
         groupSizeContainer.style.display = 'block';
     }
 }
+
 /**
  * Randomizes the cohort based on the selected mode and group size.
  */
@@ -222,10 +223,9 @@ function randomizeCohort() {
     if (mode1Label.classList.contains('active')) {
         // Pair mode
         while (names.length > 1) {
-            const pair = [names.pop(), names.pop()];
-            result.push(pair);
+            result.push([names.pop(), names.pop()]);
         }
-        if (names.length === 1) { // If there's one name left
+        if (names.length === 1) {
             result.push([names.pop()]);
         }
     } else if (mode2Label.classList.contains('active')) {
@@ -235,9 +235,9 @@ function randomizeCohort() {
             alert('Please enter a valid group size.');
             return;
         }
+        // For group mode, just split into groups of the specified size
         while (names.length > 0) {
-            const group = names.splice(0, groupSize);
-            result.push(group);
+            result.push(names.splice(0, Math.min(groupSize, names.length)));
         }
     }
 
@@ -251,16 +251,17 @@ function randomizeCohort() {
 function displayResult(result) {
     const resultDiv = document.getElementById('result');
     resultDiv.innerHTML = '';
-    result.forEach(group => {  // Loop through each group
+    
+    result.forEach(group => {
         const groupDiv = document.createElement('div');
         groupDiv.className = 'group';
         
-        if (group.length === 1) { // If there's only one person in the group
-            groupDiv.textContent = `${group[0]} solo`; // `$` is used for string interpolation, interpolation is when 
-            // you insert a variable into a string. The variable is surrounded by curly braces ${variable} and is
-            // preceded by a dollar sign $.
+        if (group.length === 1) {
+            groupDiv.textContent = `Solo: ${group[0]}`;
+        } else if (group.length === 2) {
+            groupDiv.textContent = `Pair: ${group.join(' with ')}`;
         } else {
-            groupDiv.textContent = group.join(' with ');
+            groupDiv.textContent = `Group: ${group.join(', ')}`;
         }
         
         resultDiv.appendChild(groupDiv);

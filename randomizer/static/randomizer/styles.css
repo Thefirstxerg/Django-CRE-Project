@@ -257,6 +257,10 @@ body.dark-mode p {
     color: #c0c0c0;
 }
 
+.dark-mode-toggle {
+    z-index: 10;
+}
+
 body.dark-mode .name-list .name-item {
     background-color: #3a3a3a;
     color: #e0e0e0;

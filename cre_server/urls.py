@@ -27,5 +27,5 @@ urlpatterns = [
     path('', redirect_to_login, name='root'),
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
-    path('randomizer/', include('randomizer.urls')),  # Change back to having a prefix
+    path('randomizer/', include('randomizer.urls')), 
 ]

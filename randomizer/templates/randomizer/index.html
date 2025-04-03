@@ -17,7 +17,9 @@
         </div>
         <h2>Add Names</h2>
         <!-- The form posts via htmx to add a name, and updates the name list -->
-        <form hx-post="{% url 'randomizer:add_name' %}" hx-target="#nameList" hx-swap="innerHTML">
+        <form hx-post="{% url 'randomizer:add_name' %}" 
+            hx-target="#nameList" 
+            hx-swap="innerHTML">
             <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
             <input type="text" name="name" id="nameInput" placeholder="Enter a name">
             <button type="submit" class="btn">Add Name</button>
